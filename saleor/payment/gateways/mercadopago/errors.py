@@ -1,0 +1,5 @@
+ORDER_NOT_CHARGED = "Order was not charged."
+INVALID_REQUEST = "El pago fue denegado."
+SERVER_ERROR = "No se pudo procesar su orden."
+UNSUPPORTED_CURRENCY = "La moneda %(currency)s no es valida."
+MP_ERROR = "Ocurrió un error con la aplicación de Mercado Pago."

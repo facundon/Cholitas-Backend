@@ -63,13 +63,13 @@ INTERNAL_IPS = get_list(os.environ.get("INTERNAL_IPS", "127.0.0.1"))
 
 DATABASES = {
     "default": dj_database_url.config(
-        default="postgres://saleor:saleor@localhost:5432/saleor", conn_max_age=600
+        default="postgres://Facu:Tesla1234@localhost:5432/CholitasDeco", conn_max_age=600
     )
 }
 
 
 TIME_ZONE = "UTC"
-LANGUAGE_CODE = "en"
+LANGUAGE_CODE = "es"
 LANGUAGES = [
     ("ar", "Arabic"),
     ("az", "Azerbaijani"),
@@ -128,7 +128,7 @@ USE_TZ = True
 
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
-EMAIL_URL = os.environ.get("EMAIL_URL")
+EMAIL_URL = "smtp://cholitas.deco@gmail.com:Cholitas386139@smtp.gmail.com:465/?ssl=True"
 SENDGRID_USERNAME = os.environ.get("SENDGRID_USERNAME")
 SENDGRID_PASSWORD = os.environ.get("SENDGRID_PASSWORD")
 if not EMAIL_URL and SENDGRID_USERNAME and SENDGRID_PASSWORD:
@@ -200,7 +200,7 @@ TEMPLATES = [
 ]
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = "&5or86-h*bi(8kd35c13wt-qm7vpvtt1zn+1@1mnmq4i*lq8g4"
 
 if not SECRET_KEY and DEBUG:
     warnings.warn("SECRET_KEY not configured, using a random temporary key.")
@@ -353,8 +353,8 @@ AUTH_PASSWORD_VALIDATORS = [
     }
 ]
 
-DEFAULT_COUNTRY = os.environ.get("DEFAULT_COUNTRY", "US")
-DEFAULT_CURRENCY = os.environ.get("DEFAULT_CURRENCY", "USD")
+DEFAULT_COUNTRY = os.environ.get("DEFAULT_COUNTRY", "AR")
+DEFAULT_CURRENCY = os.environ.get("DEFAULT_CURRENCY", "ARS")
 DEFAULT_DECIMAL_PLACES = 3
 DEFAULT_MAX_DIGITS = 12
 DEFAULT_CURRENCY_CODE_LENGTH = 3
@@ -509,16 +509,17 @@ GRAPHENE = {
 PLUGINS_MANAGER = "saleor.plugins.manager.PluginsManager"
 
 PLUGINS = [
-    "saleor.plugins.avatax.plugin.AvataxPlugin",
-    "saleor.plugins.vatlayer.plugin.VatlayerPlugin",
+    # "saleor.plugins.avatax.plugin.AvataxPlugin",
+    # "saleor.plugins.vatlayer.plugin.VatlayerPlugin",
     "saleor.plugins.webhook.plugin.WebhookPlugin",
-    "saleor.payment.gateways.dummy.plugin.DummyGatewayPlugin",
-    "saleor.payment.gateways.dummy_credit_card.plugin.DummyCreditCardGatewayPlugin",
-    "saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin",
-    "saleor.payment.gateways.braintree.plugin.BraintreeGatewayPlugin",
-    "saleor.payment.gateways.razorpay.plugin.RazorpayGatewayPlugin",
-    "saleor.payment.gateways.adyen.plugin.AdyenGatewayPlugin",
+    # "saleor.payment.gateways.dummy.plugin.DummyGatewayPlugin",
+    # "saleor.payment.gateways.dummy_credit_card.plugin.DummyCreditCardGatewayPlugin",
+    # "saleor.payment.gateways.stripe.plugin.StripeGatewayPlugin",
+    # "saleor.payment.gateways.braintree.plugin.BraintreeGatewayPlugin",
+    # "saleor.payment.gateways.razorpay.plugin.RazorpayGatewayPlugin",
+    # "saleor.payment.gateways.adyen.plugin.AdyenGatewayPlugin",
     "saleor.plugins.invoicing.plugin.InvoicingPlugin",
+    "saleor.payment.gateways.mercadopago.plugin.MercadoPagoGatewayPlugin",
 ]
 
 # Plugin discovery

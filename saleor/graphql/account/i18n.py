@@ -29,7 +29,7 @@ class I18nMixin:
                 raise ValidationError(
                     {
                         "phone": ValidationError(
-                            f"'{phone}' is not a valid phone number.", code=exc.code
+                            f"'{phone}' no es un número válido.", code=exc.code
                         )
                     }
                 ) from exc

@@ -388,6 +388,7 @@ def complete_checkout(
     :raises ValidationError
     """
     payment = checkout.get_last_active_payment()
+
     _prepare_checkout(
         checkout=checkout,
         discounts=discounts,

@@ -50,18 +50,22 @@ def get_request_header(private_key: str, **_):
 def get_request_body(payment_information):
     body = {
         "token": payment_information.token,
-        "installments": 1,
+        "installments": int(payment_information.data["installments"]),
         "transaction_amount": int(payment_information.amount),
-        "payment_method_id": "visa",
+        "payment_method_id": payment_information.data["brand"],
         "payer": {
-            "email": "test_user_74897251@testuser.com1",
+            "email": payment_information.data["email"],
             "identification": {
-                "number": "",
-                "type": ""
+                "number": payment_information.data["payer"]["identification"]["number"],
+                "type": payment_information.data["payer"]["identification"]["type"]
             }
         },
         "statement_descriptor": "MercadoPago",
-
+        "additional_info":{
+            "payer":{
+                "first_name":payment_information.data["payer"]["name"],
+            },
+        }
     }
     return json.dumps(body)
 
@@ -94,5 +98,4 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
 def process_payment(
     payment_information: PaymentData, config: GatewayConfig
 ) -> GatewayResponse:
-    print(payment_information)
     return capture(payment_information=payment_information, config=config)

@@ -8,11 +8,11 @@ class OrderStatus:
     CANCELED = "canceled"  # permanently canceled order
 
     CHOICES = [
-        (DRAFT, "Draft"),
-        (UNFULFILLED, "Unfulfilled"),
-        (PARTIALLY_FULFILLED, "Partially fulfilled"),
-        (FULFILLED, "Fulfilled"),
-        (CANCELED, "Canceled"),
+        (DRAFT, "Borrador"),
+        (UNFULFILLED, "Incumplida"),
+        (PARTIALLY_FULFILLED, "Parcialmente Cumplida"),
+        (FULFILLED, "Cumplida"),
+        (CANCELED, "Cancelada"),
     ]
 
 
@@ -21,8 +21,8 @@ class FulfillmentStatus:
     CANCELED = "canceled"  # fulfilled group of products in an order marked as canceled
 
     CHOICES = [
-        (FULFILLED, "Fulfilled"),
-        (CANCELED, "Canceled"),
+        (FULFILLED, "Cumplida"),
+        (CANCELED, "Cancelada"),
     ]
 
 

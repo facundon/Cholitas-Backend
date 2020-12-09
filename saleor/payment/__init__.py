@@ -108,12 +108,12 @@ class ChargeStatus:
     CANCELLED = "cancelled"
 
     CHOICES = [
-        (NOT_CHARGED, "Not charged"),
-        (PENDING, "Pending"),
-        (PARTIALLY_CHARGED, "Partially charged"),
-        (FULLY_CHARGED, "Fully charged"),
-        (PARTIALLY_REFUNDED, "Partially refunded"),
-        (FULLY_REFUNDED, "Fully refunded"),
-        (REFUSED, "Refused"),
-        (CANCELLED, "Cancelled"),
+        (NOT_CHARGED, "Sin Pagar"),
+        (PENDING, "Pendiente"),
+        (PARTIALLY_CHARGED, "Parcialmente Pagada"),
+        (FULLY_CHARGED, "Pagada"),
+        (PARTIALLY_REFUNDED, "Parcialmente Reembolsada"),
+        (FULLY_REFUNDED, "Reembolsada"),
+        (REFUSED, "Rechazada"),
+        (CANCELLED, "Cancelada"),
     ]

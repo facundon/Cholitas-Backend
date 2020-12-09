@@ -78,11 +78,19 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
         payload = get_request_body(payment_information)
         response = requests.post(url, data=payload, headers=header).json()
         if response["status"] != "approved":
-            error = errors.MP_ERROR
-            logger.exception(response["message"])
-            response = get_error_response(
-                payment_information.amount, error=error, id=payment_information.token
-            )
+            try:
+                error = errors.STATUS_DETAIL[response["status_detail"]]
+                error = error.replace("payment_method_id", response["payment_method_id"]) \
+                    .replace("statement_descriptor", response["statement_descriptor"]) \
+                    .replace("amount", str(response["transaction_amount"])) 
+                logger.exception(error)
+            except KeyError:
+                logger.exception(response["message"])
+                error = errors.MP_ERROR
+            finally:
+                response = get_error_response(
+                    payment_information.amount, error=error, id=payment_information.token
+                )
     else:
         response = get_error_response(
             payment_information.amount, error=error, id=payment_information.token

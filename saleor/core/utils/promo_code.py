@@ -12,7 +12,7 @@ class InvalidPromoCode(ValidationError):
         if message is None:
             message = {
                 "promo_code": ValidationError(
-                    "Promo code is invalid", code=GiftCardErrorCode.INVALID
+                    "El código es invalido", code=GiftCardErrorCode.INVALID
                 )
             }
         super().__init__(message, **kwargs)
@@ -23,7 +23,7 @@ class PromoCodeAlreadyExists(ValidationError):
         code = kwargs.get("code", GiftCardErrorCode.ALREADY_EXISTS)
         if message is None:
             message = {
-                "promo_code": ValidationError("Promo code already exists.", code=code)
+                "promo_code": ValidationError("El código ya se utilizó.", code=code)
             }
         super().__init__(message, **kwargs)
 

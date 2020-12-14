@@ -119,8 +119,8 @@ def check_lines_quantity(variants, quantities, country):
         except InsufficientStock as e:
             available_quantity = get_available_quantity(e.item, country)
             message = (
-                "Could not add item "
-                + "%(item_name)s. Only %(remaining)d remaining in stock."
+                "No se pudo agregar el item "
+                + "%(item_name)s. Solo quedan %(remaining)d en stock."
                 % {
                     "remaining": available_quantity,
                     "item_name": e.item.display_product(),

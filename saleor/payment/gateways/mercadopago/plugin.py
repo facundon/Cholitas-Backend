@@ -1,11 +1,15 @@
 from typing import TYPE_CHECKING
 
 from saleor.plugins.base_plugin import BasePlugin, ConfigurationTypeField
+from django.core.handlers.wsgi import WSGIRequest
+from django.http import HttpResponse, HttpResponseNotFound
 
 from ..utils import get_supported_currencies
 from . import GatewayConfig, capture, process_payment
+from .webhooks import handle_webhook
 
 GATEWAY_NAME = "Mercado Pago"
+WEBHOOK_PATH = "/webhooks"
 
 if TYPE_CHECKING:
     from . import GatewayResponse, PaymentData
@@ -78,6 +82,14 @@ class MercadoPagoGatewayPlugin(BasePlugin):
             },
             store_customer=configuration["Store customers card"],
         )
+
+    # http(s)://<your-backend-url>/plugins/mirumee.payments.mercadopago/webhooks/
+    def webhook(self, request: WSGIRequest, path: str, previous_value) -> HttpResponse:
+        config = self._get_gateway_config()
+        if path.startswith(WEBHOOK_PATH):
+            return handle_webhook(request, config)
+        return HttpResponseNotFound()
+
 
     def _get_gateway_config(self):
         return self.config

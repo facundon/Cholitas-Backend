@@ -55,7 +55,9 @@ def get_request_body(payment_information):
         "token": payment_information.token,
         "installments": int(payment_information.data["installments"]),
         "transaction_amount": int(payment_information.amount),
+        "notification_url": "http://c5d9b4e2435c.ngrok.io/plugins/mirumee.payments.mercadopago/webhooks/",
         "payment_method_id": payment_information.data["brand"],
+        "statement_descriptor":"Cholitas Deco",
         "payer": {
             "email": payment_information.data["email"],
             "identification": {
@@ -96,7 +98,13 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
         header = get_request_header(**config.connection_params)
         payload = get_request_body(payment_information)
         response = requests.post(url, data=payload, headers=header).json()
-        if response["status"] == "rejected":
+        if response["status"] != "approved":
+            if response["status"] == "in_process":
+                return _generate_response(
+                    payment_information=payment_information,
+                    kind=TransactionKind.PENDING,
+                    data=response
+                )
             try:
                 error = errors.STATUS_DETAIL[response["status_detail"]]
                 error = error.replace("payment_method_id", response["payment_method_id"]) \
@@ -111,13 +119,6 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
                 response = get_error_response(
                     payment_information.amount, error=error, id=payment_information.token
                 )
-        elif response["status"] == "in_process":
-            return _generate_response(
-                payment_information=payment_information,
-                kind=TransactionKind.PENDING,
-                data=response
-            )
-
     else:
         response = get_error_response(
             payment_information.amount, error=error, id=payment_information.token

@@ -68,7 +68,7 @@ class AccountRegister(ModelMutation):
             raise ValidationError(
                 {
                     "redirect_url": ValidationError(
-                        "This field is required.", code=AccountErrorCode.REQUIRED
+                        "Este campo es obligatorio.", code=AccountErrorCode.REQUIRED
                     )
                 }
             )
@@ -202,7 +202,7 @@ class AccountDelete(ModelDeleteMutation):
         super().clean_instance(info, instance)
         if instance.is_staff:
             raise ValidationError(
-                "Cannot delete a staff account.",
+                "No se puede eliminar una cuenta del Staff.",
                 code=AccountErrorCode.DELETE_STAFF_ACCOUNT,
             )
 
@@ -391,7 +391,7 @@ class RequestEmailChange(BaseMutation):
             raise ValidationError(
                 {
                     "password": ValidationError(
-                        "Password isn't valid.",
+                        "Contraseña invalida.",
                         code=AccountErrorCode.INVALID_CREDENTIALS,
                     )
                 }
@@ -400,7 +400,7 @@ class RequestEmailChange(BaseMutation):
             raise ValidationError(
                 {
                     "new_email": ValidationError(
-                        "Email is used by other user.", code=AccountErrorCode.UNIQUE
+                        "El Email ya se encuentra en uso por otra cuenta", code=AccountErrorCode.UNIQUE
                     )
                 }
             )
@@ -445,7 +445,7 @@ class ConfirmEmailChange(BaseMutation):
             raise ValidationError(
                 {
                     "token": ValidationError(
-                        "Invalid or expired token.",
+                        "Token invalido o expirado.",
                         code=AccountErrorCode.JWT_INVALID_TOKEN,
                     )
                 }
@@ -465,7 +465,7 @@ class ConfirmEmailChange(BaseMutation):
             raise ValidationError(
                 {
                     "new_email": ValidationError(
-                        "Email is used by other user.", code=AccountErrorCode.UNIQUE
+                        "El Email ya se encuentra en uso por otra cuenta.", code=AccountErrorCode.UNIQUE
                     )
                 }
             )

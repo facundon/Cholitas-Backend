@@ -45,7 +45,7 @@ class I18nMixin:
     def validate_address(cls, address_data: dict, instance=None, info=None):
         if address_data.get("country") is None:
             raise ValidationError(
-                {"country": ValidationError("This field is required.", code="required")}
+                {"country": ValidationError("Este campo es obligatorio.", code="required")}
             )
         address_form = cls.validate_address_form(address_data)
         if not instance:

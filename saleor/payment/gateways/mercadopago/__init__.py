@@ -48,6 +48,9 @@ def get_request_header(private_key: str, **_):
 
 
 def get_request_body(payment_information):
+    full_name = payment_information.data["payer"]["name"].split()
+    first_name = full_name[0]
+    last_name = full_name[-1]
     body = {
         "token": payment_information.token,
         "installments": int(payment_information.data["installments"]),
@@ -63,8 +66,24 @@ def get_request_body(payment_information):
         "statement_descriptor": "MercadoPago",
         "additional_info":{
             "payer":{
-                "first_name":payment_information.data["payer"]["name"],
+                "first_name":first_name.capitalize(),
+                "last_name": last_name.capitalize(),
+                "address": {
+                    "zip_code": payment_information.billing.postal_code,
+                    "street_name": payment_information.billing.street_address_1,
+                },
+                "phone": {
+                    "number":payment_information.billing.phone
+			    },
             },
+            "shipments":{
+                "receiver_address":{
+                    "street_name":payment_information.shipping.street_address_1,
+                    "zip_code":payment_information.shipping.postal_code,
+                    "city_name": payment_information.shipping.city,
+                    "state_name": payment_information.shipping.country_area
+                }
+		    }
         }
     }
     return json.dumps(body)
@@ -77,7 +96,7 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
         header = get_request_header(**config.connection_params)
         payload = get_request_body(payment_information)
         response = requests.post(url, data=payload, headers=header).json()
-        if response["status"] != "approved":
+        if response["status"] == "rejected":
             try:
                 error = errors.STATUS_DETAIL[response["status_detail"]]
                 error = error.replace("payment_method_id", response["payment_method_id"]) \
@@ -86,11 +105,19 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
                 logger.exception(error)
             except KeyError:
                 logger.exception(response["message"])
-                error = errors.MP_ERROR
+                err_code = response["cause"][0]["code"]
+                error = errors.MP_API_ERROR[err_code] if err_code in errors.MP_API_ERROR else errors.MP_ERROR
             finally:
                 response = get_error_response(
                     payment_information.amount, error=error, id=payment_information.token
                 )
+        elif response["status"] == "in_process":
+            return _generate_response(
+                payment_information=payment_information,
+                kind=TransactionKind.PENDING,
+                data=response
+            )
+
     else:
         response = get_error_response(
             payment_information.amount, error=error, id=payment_information.token

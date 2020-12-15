@@ -55,9 +55,11 @@ def get_request_body(payment_information):
         "token": payment_information.token,
         "installments": int(payment_information.data["installments"]),
         "transaction_amount": int(payment_information.amount),
+        "description": payment_information.data["description"],
         "notification_url": "http://c5d9b4e2435c.ngrok.io/plugins/mirumee.payments.mercadopago/webhooks/",
         "payment_method_id": payment_information.data["brand"],
         "statement_descriptor":"Cholitas Deco",
+        "external_reference": payment_information.payment_id,
         "payer": {
             "email": payment_information.data["email"],
             "identification": {

@@ -27,7 +27,7 @@ def require_active_plugin(fn):
 
 class MercadoPagoGatewayPlugin(BasePlugin):
     PLUGIN_NAME = GATEWAY_NAME
-    PLUGIN_ID = "mercadopago"
+    PLUGIN_ID = "mirumee.payments.mercadopago"
     DEFAULT_CONFIGURATION = [
         {"name": "Public API key", "value": None},
         {"name": "Secret API key", "value": None},
@@ -39,30 +39,30 @@ class MercadoPagoGatewayPlugin(BasePlugin):
     CONFIG_STRUCTURE = {
         "Public API key": {
             "type": ConfigurationTypeField.SECRET,
-            "help_text": "Provide  public API key.",
+            "help_text": "Proveer la public key de la API de MercadoPago..",
             "label": "Clave Publica API",
         },
         "Secret API key": {
             "type": ConfigurationTypeField.SECRET,
-            "help_text": "Provide Stripe secret API key.",
+            "help_text": "Proveer la secret key de la API de MercadoPago.",
             "label": "Clave Privada API",
         },
         "Store customers card": {
             "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should store cards on payments "
+            "help_text": "Determina si Saleor debe guardar las tarjetas en los pagos."
             "in Stripe customer.",
-            "label": "Store customers card",
+            "label": "Guardar tarjeta del cliente",
         },
         "Automatic payment capture": {
             "type": ConfigurationTypeField.BOOLEAN,
-            "help_text": "Determines if Saleor should automaticaly capture payments.",
-            "label": "Automatic payment capture",
+            "help_text": "Determina si Saleor captura los pagos automaticamente.",
+            "label": "Captura de pagos automática",
         },
         "Supported currencies": {
             "type": ConfigurationTypeField.STRING,
-            "help_text": "Determines currencies supported by gateway."
-            " Please enter currency codes separated by a comma.",
-            "label": "Supported currencies",
+            "help_text": "Determina las monedas soportadas por el medio de pago."
+            " Por favor ingresar las monedas separadas con coma.",
+            "label": "Monedas soportadas",
         },
     }
 
@@ -83,7 +83,7 @@ class MercadoPagoGatewayPlugin(BasePlugin):
             store_customer=configuration["Store customers card"],
         )
 
-    # http(s)://<your-backend-url>/plugins/mercadopago/webhooks/
+    # http(s)://<your-backend-url>/plugins/mirumee.payments.mercadopago/webhooks/
     def webhook(self, request: WSGIRequest, path: str, previous_value) -> HttpResponse:
         config = self._get_gateway_config()
         if path.startswith(WEBHOOK_PATH):

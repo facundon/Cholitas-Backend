@@ -13,10 +13,36 @@ from django.http import (
 from django.core.handlers.wsgi import WSGIRequest
 from graphql_relay import from_global_id
 from typing import Optional
-from ....payment.models import Payment
+from ....payment.models import Payment, Transaction
+from ... import TransactionKind
+from ...interface import GatewayConfig, GatewayResponse
+from ...utils import create_payment_information, create_transaction, gateway_postprocess
+from ....order.events import external_notification_event
+from ....order.actions import (
+    cancel_order,
+    order_authorized,
+    order_captured,
+    order_refunded,
+)
 
 
 logger = logging.getLogger(__name__)
+
+
+def create_payment_notification_for_order(
+    payment: Payment, success_msg: str, failed_msg: Optional[str], is_success: bool
+):
+    if not payment.order:
+        # Order is not assigned
+        return
+    msg = success_msg if is_success else failed_msg
+
+    external_notification_event(
+        order=payment.order,
+        user=None,
+        message=msg,
+        parameters={"service": payment.gateway, "id": payment.token},
+    )
 
 
 def get_payment(
@@ -55,6 +81,44 @@ def get_payment(
     return payment
 
 
+def get_transaction(
+    payment: "Payment", transaction_id: Optional[str], kind: str,
+) -> Optional[Transaction]:
+    transaction = payment.transactions.filter(kind=kind, token=transaction_id).last()
+    return transaction
+
+
+def create_new_transaction(mp_response, payment, kind):
+    transaction_id = mp_response.get("id")
+    currency = mp_response.get("currency_id")
+    amount = mp_response.get("transaction_amount")
+    is_success = True
+
+    gateway_response = GatewayResponse(
+        kind=kind,
+        action_required=False,
+        transaction_id=transaction_id,
+        is_success=is_success,
+        amount=amount,
+        currency=currency,
+        error="",
+        raw_response=mp_response,
+        searchable_key=transaction_id
+    )
+    return create_transaction(
+        payment,
+        kind=kind,
+        payment_information=None,
+        action_required=False,
+        gateway_response=gateway_response,
+    )
+
+
+def get_transaction_kind(status):
+    kind = POSSIBLE_STATUS.get(status)
+    return kind
+
+
 def get_request_header(private_key: str, **_):
     header = {"Authorization": f"Bearer {private_key}"}
     return header
@@ -70,26 +134,32 @@ def get_mp_payment(id, gateway_config):
     response = requests.get(url, headers=header).json()
     return response
 
-POSSIBLE_STATUS = [
-    "pending",
-    "approved",
-    "authorized",
-    "in_process",
-    "in_mediation",
-    "rejected",
-    "cancelled",
-    "refunded",
-    "charged_back",
-]
+
+POSSIBLE_STATUS = {
+    "pending": TransactionKind.PENDING,
+    "approved": TransactionKind.CAPTURE,
+    "authorized": TransactionKind.AUTH,
+    "in_process": TransactionKind.PENDING,
+    "in_mediation": TransactionKind.ACTION_TO_CONFIRM,
+    "rejected": TransactionKind.CAPTURE_FAILED,
+    "cancelled": TransactionKind.CANCEL,
+    "refunded": TransactionKind.REFUND,
+    "charged_back": TransactionKind.ACTION_TO_CONFIRM,
+}
 
 
 def handle_status_change(id, gateway_config):
-    response = get_mp_payment(id, gateway_config)
-    if response["status"] in POSSIBLE_STATUS:
-        payment = get_payment(payment_id=response["external_reference"])
-        print(dir(payment))
+    mp_response = get_mp_payment(id, gateway_config)
+    if mp_response["status"] in POSSIBLE_STATUS:
+        payment = get_payment(payment_id=mp_response["external_reference"])
+        kind = get_transaction_kind(mp_response["status"])
+        new_transaction = create_new_transaction(mp_response, payment, kind)
+        if new_transaction.is_success:
+            gateway_postprocess(new_transaction, payment)
+        success_msg = f"MercadoPago: El request del pago {transaction_id} fue exitoso."
+        create_payment_notification_for_order(payment, success_msg, None, True)
     else:
-        logger.exception(response["message"])
+        logger.exception(mp_response["message"])
         return
 
 
@@ -102,8 +172,8 @@ def handle_webhook(request: WSGIRequest, gateway_config: "GatewayConfig"):
         return HttpResponse(status=200)
     # JSON and HTTP POST notifications always contain a single NotificationRequestItem
     # object.
-    # notification = json_data.get("notificationItems")[0].get(
-    #     "NotificationRequestItem", {}
-    # )
+    if json_data["action"] != "payment.updated":
+        return HttpResponse(status=200)
+        
     handle_status_change(json_data["data"]["id"], gateway_config)
     return HttpResponse(status=200)   

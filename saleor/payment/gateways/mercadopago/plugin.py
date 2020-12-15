@@ -50,7 +50,7 @@ class MercadoPagoGatewayPlugin(BasePlugin):
         "Store customers card": {
             "type": ConfigurationTypeField.BOOLEAN,
             "help_text": "Determina si Saleor debe guardar las tarjetas en los pagos."
-            "in Stripe customer.",
+            "de Mercado Pago.",
             "label": "Guardar tarjeta del cliente",
         },
         "Automatic payment capture": {

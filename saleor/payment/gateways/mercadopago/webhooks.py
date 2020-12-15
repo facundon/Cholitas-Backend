@@ -66,7 +66,7 @@ def get_payment(
     payments = (
         Payment.objects.prefetch_related("order", "checkout")
         .select_for_update(of=("self",))
-        .filter(id=db_payment_id, gateway="mercadopago")
+        .filter(id=db_payment_id, gateway="mirumee.payments.mercadopago")
     )
     if check_if_active:
         payments = payments.filter(is_active=True)
@@ -164,7 +164,6 @@ def handle_status_change(id, gateway_config):
         payment = get_payment(payment_id=mp_response["external_reference"])  # Get Saleor payment with the payment graph_ql_id
         kind = get_transaction_kind(mp_response["status"])  # Get the transaction kind based on the new payment status (read from mercadopago api)
         if payment is None:
-            logger.exception("No se encontro el pago dentro de la plataforma")
             return
         capture_transaction = payment.transactions.filter(
             action_required=False, is_success=True 
@@ -174,6 +173,8 @@ def handle_status_change(id, gateway_config):
             gateway_postprocess(new_transaction, payment)  # Submit the new transaction
             success_msg = f"MercadoPago: El estado del pago {id} fue actualizado de {TRANSLATED_KINDS.get(capture_transaction.kind)} a {TRANSLATED_KINDS.get(kind)}."
             create_payment_notification_for_order(payment, success_msg, None, True)
+        else:
+            logger.exception("El estado del pago no cambio")
     else:
         logger.exception(mp_response["message"])
         return

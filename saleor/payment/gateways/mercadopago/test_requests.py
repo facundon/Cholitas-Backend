@@ -31,12 +31,12 @@ def get_request_data(id):
     }
     return body, header
 
-body, header = get_request_data(id=1231935157)
+body, header = get_request_data(id="1231949299")
 
 cases = {
     "PUT": requests.put('https://api.mercadopago.com/v1/payments/1231935157', json={"status":"approved"}, headers={"Authorization": "Bearer TEST-5363032924027795-111104-87699c155b89e8fe293aa74af75664d3-670854424"}).json(),
     "GET":requests.get('https://api.mercadopago.com/v1/payments/1231935157', headers={"Authorization": "Bearer TEST-5363032924027795-111104-87699c155b89e8fe293aa74af75664d3-670854424"}).json(),
-    "WEBHOOK": requests.post('http://127.0.0.1:8000/plugins/mercadopago/webhooks/', data=json.dumps(body), headers=header),
+    "WEBHOOK": requests.post('http://127.0.0.1:8000/plugins/mirumee.payments.mercadopago/webhooks/', data=json.dumps(body), headers=header),
 }
 
 response = cases.get("WEBHOOK")

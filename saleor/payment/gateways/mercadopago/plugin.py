@@ -27,7 +27,7 @@ def require_active_plugin(fn):
 
 class MercadoPagoGatewayPlugin(BasePlugin):
     PLUGIN_NAME = GATEWAY_NAME
-    PLUGIN_ID = "mirumee.payments.mercadopago"
+    PLUGIN_ID = "mercadopago"
     DEFAULT_CONFIGURATION = [
         {"name": "Public API key", "value": None},
         {"name": "Secret API key", "value": None},
@@ -83,7 +83,7 @@ class MercadoPagoGatewayPlugin(BasePlugin):
             store_customer=configuration["Store customers card"],
         )
 
-    # http(s)://<your-backend-url>/plugins/mirumee.payments.mercadopago/webhooks/
+    # http(s)://<your-backend-url>/plugins/mercadopago/webhooks/
     def webhook(self, request: WSGIRequest, path: str, previous_value) -> HttpResponse:
         config = self._get_gateway_config()
         if path.startswith(WEBHOOK_PATH):

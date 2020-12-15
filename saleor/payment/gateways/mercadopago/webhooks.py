@@ -66,7 +66,7 @@ def get_payment(
     payments = (
         Payment.objects.prefetch_related("order", "checkout")
         .select_for_update(of=("self",))
-        .filter(id=db_payment_id, gateway="mirumee.payments.mercadopago")
+        .filter(id=db_payment_id, gateway="mercadopago")
     )
     if check_if_active:
         payments = payments.filter(is_active=True)
@@ -147,17 +147,33 @@ POSSIBLE_STATUS = {
     "charged_back": TransactionKind.ACTION_TO_CONFIRM,
 }
 
+TRANSLATED_KINDS = {
+    TransactionKind.PENDING: "Pendiente",
+    TransactionKind.CAPTURE: "Pagado",
+    TransactionKind.AUTH: "Autorizado",
+    TransactionKind.ACTION_TO_CONFIRM: "A confirmar",
+    TransactionKind.CAPTURE_FAILED: "Rechazado",
+    TransactionKind.CANCEL: "Cancelado",
+    TransactionKind.REFUND: "Reembolsado",
+}
+
 
 def handle_status_change(id, gateway_config):
     mp_response = get_mp_payment(id, gateway_config)
     if mp_response["status"] in POSSIBLE_STATUS:
-        payment = get_payment(payment_id=mp_response["external_reference"])
-        kind = get_transaction_kind(mp_response["status"])
-        new_transaction = create_new_transaction(mp_response, payment, kind)
-        if new_transaction.is_success:
-            gateway_postprocess(new_transaction, payment)
-        success_msg = f"MercadoPago: El request del pago {transaction_id} fue exitoso."
-        create_payment_notification_for_order(payment, success_msg, None, True)
+        payment = get_payment(payment_id=mp_response["external_reference"])  # Get Saleor payment with the payment graph_ql_id
+        kind = get_transaction_kind(mp_response["status"])  # Get the transaction kind based on the new payment status (read from mercadopago api)
+        if payment is None:
+            logger.exception("No se encontro el pago dentro de la plataforma")
+            return
+        capture_transaction = payment.transactions.filter(
+            action_required=False, is_success=True 
+        ).last()  # Capture the last transaction made for that payment
+        if capture_transaction.kind != kind:  # Check if the new status correspond with the last status
+            new_transaction = create_new_transaction(mp_response, payment, kind)  #  Make new transaction with the updated transaction kind
+            gateway_postprocess(new_transaction, payment)  # Submit the new transaction
+            success_msg = f"MercadoPago: El estado del pago {id} fue actualizado de {TRANSLATED_KINDS.get(capture_transaction.kind)} a {TRANSLATED_KINDS.get(kind)}."
+            create_payment_notification_for_order(payment, success_msg, None, True)
     else:
         logger.exception(mp_response["message"])
         return
@@ -174,6 +190,6 @@ def handle_webhook(request: WSGIRequest, gateway_config: "GatewayConfig"):
     # object.
     if json_data["action"] != "payment.updated":
         return HttpResponse(status=200)
-        
+
     handle_status_change(json_data["data"]["id"], gateway_config)
     return HttpResponse(status=200)   

@@ -171,8 +171,14 @@ def handle_status_change(id, gateway_config):
         if capture_transaction.kind != kind:  # Check if the new status correspond with the last status
             new_transaction = create_new_transaction(mp_response, payment, kind)  #  Make new transaction with the updated transaction kind
             gateway_postprocess(new_transaction, payment)  # Submit the new transaction
-            success_msg = f"MercadoPago: El estado del pago {id} fue actualizado de {TRANSLATED_KINDS.get(capture_transaction.kind)} a {TRANSLATED_KINDS.get(kind)}."
-            create_payment_notification_for_order(payment, success_msg, None, True)
+            if kind == TransactionKind.CAPTURE:  # Update the order status and send the corresponding Email
+                order_captured(payment.order, None, new_transaction.amount, payment)
+            elif kind == TransactionKind.CAPTURE_FAILED or kind == TransactionKind.CANCEL:
+                cancel_order(payment.order, None)
+            elif kind == TransactionKind.REFUND:
+                order_refunded(payment.order, None, new_transaction.amount, payment)
+            msg = f"MercadoPago: El estado del pago {id} fue actualizado de {TRANSLATED_KINDS.get(capture_transaction.kind)} a {TRANSLATED_KINDS.get(kind)}."
+            create_payment_notification_for_order(payment, msg, None, True)  # Create a notification to show in the dashboard
         else:
             logger.exception("El estado del pago no cambio")
     else:

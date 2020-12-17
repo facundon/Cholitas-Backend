@@ -10,8 +10,15 @@ from . import errors
 from .utils import get_error_response
 
 SUPPORTED_CURRENCIES = ("ARS",)
+OTHER_PAYMENT_METHODS = [
+    "rapipago",
+    "pagofacil",
+    "bapropagos",
+    "cargavirtual",
+]
+
 # Get the logger for this file, it will allow us to log
-# error responses from razorpay.
+# error responses from mercadoPago
 logger = logging.getLogger(__name__)
 
 
@@ -48,47 +55,64 @@ def get_request_header(private_key: str, **_):
 
 
 def get_request_body(payment_information):
-    full_name = payment_information.data["payer"]["name"].split()
-    first_name = full_name[0]
-    last_name = full_name[-1]
-    body = {
-        "token": payment_information.token,
-        "installments": int(payment_information.data["installments"]),
-        "transaction_amount": int(payment_information.amount),
-        "description": payment_information.data["description"],
-        "notification_url": "http://c5d9b4e2435c.ngrok.io/plugins/mirumee.payments.mercadopago/webhooks/",
-        "payment_method_id": payment_information.data["brand"],
-        "statement_descriptor":"Cholitas Deco",
-        "external_reference": payment_information.graphql_payment_id,
-        "payer": {
-            "email": payment_information.data["email"],
-            "identification": {
-                "number": payment_information.data["payer"]["identification"]["number"],
-                "type": payment_information.data["payer"]["identification"]["type"]
-            }
-        },
-        "additional_info":{
-            "payer":{
-                "first_name":first_name.capitalize(),
-                "last_name": last_name.capitalize(),
-                "address": {
-                    "zip_code": payment_information.billing.postal_code,
-                    "street_name": payment_information.billing.street_address_1,
+    if payment_information.data["brand"] in OTHER_PAYMENT_METHODS:
+        body = {
+            "transaction_amount": int(payment_information.amount),
+            "description": payment_information.data["description"],
+            "notification_url": "http://c5d9b4e2435c.ngrok.io/plugins/mirumee.payments.mercadopago/webhooks/",
+            "payment_method_id": payment_information.data["brand"],
+            "statement_descriptor":"Cholitas Deco",
+            "external_reference": payment_information.graphql_payment_id,
+            "payer": {
+                "email": payment_information.data["email"],
+                "identification": {
+                    "number": payment_information.data["docNumber"],
+                    "type": payment_information.data["docType"],
                 },
-                "phone": {
-                    "number":payment_information.billing.phone
-			    },
             },
-            "shipments":{
-                "receiver_address":{
-                    "street_name":payment_information.shipping.street_address_1,
-                    "zip_code":payment_information.shipping.postal_code,
-                    "city_name": payment_information.shipping.city,
-                    "state_name": payment_information.shipping.country_area
-                }
-		    }
         }
-    }
+    else:
+        full_name = payment_information.data["payer"]["name"].split()
+        first_name = full_name[0]
+        last_name = full_name[-1]
+        body = {
+            "token": payment_information.token,
+            "installments": int(payment_information.data["installments"]),
+            "transaction_amount": int(payment_information.amount),
+            "description": payment_information.data["description"],
+            "notification_url": "http://c5d9b4e2435c.ngrok.io/plugins/mirumee.payments.mercadopago/webhooks/",
+            "payment_method_id": payment_information.data["brand"],
+            "statement_descriptor":"Cholitas Deco",
+            "external_reference": payment_information.graphql_payment_id,
+            "payer": {
+                "email": payment_information.data["email"],
+                "identification": {
+                    "number": payment_information.data["payer"]["identification"]["number"],
+                    "type": payment_information.data["payer"]["identification"]["type"]
+                }
+            },
+            "additional_info":{
+                "payer":{
+                    "first_name":first_name.capitalize(),
+                    "last_name": last_name.capitalize(),
+                    "address": {
+                        "zip_code": payment_information.billing.postal_code,
+                        "street_name": payment_information.billing.street_address_1,
+                    },
+                    "phone": {
+                        "number":payment_information.billing.phone
+                    },
+                },
+                "shipments":{
+                    "receiver_address":{
+                        "street_name":payment_information.shipping.street_address_1,
+                        "zip_code":payment_information.shipping.postal_code,
+                        "city_name": payment_information.shipping.city,
+                        "state_name": payment_information.shipping.country_area
+                    }
+                }
+            }
+        }
     return json.dumps(body)
 
 
@@ -99,8 +123,9 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
         header = get_request_header(**config.connection_params)
         payload = get_request_body(payment_information)
         response = requests.post(url, data=payload, headers=header).json()
+
         if response["status"] != "approved":
-            if response["status"] == "in_process":
+            if response["status"] == "in_process" or response["status"] == "pending":
                 return _generate_response(
                     payment_information=payment_information,
                     kind=TransactionKind.PENDING,
@@ -118,7 +143,7 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
                 error = errors.MP_API_ERROR[err_code] if err_code in errors.MP_API_ERROR else errors.MP_ERROR
             finally:
                 response = get_error_response(
-                    payment_information.amount, error=error, id=payment_information.token
+                    payment_information.amount, error=error or "Error inesperado", id=payment_information.token
                 )
     else:
         response = get_error_response(

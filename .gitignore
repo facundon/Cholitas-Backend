@@ -22,6 +22,7 @@
 *.pot
 *.pyc
 local_settings.py
+settings.py
 __pycache__/
 build/
 coverage/
@@ -31,6 +32,6 @@ dist/
 /media/
 /node_modules/
 /static/
-
+/saleor-venv/
 # Exported results file
 django-queries-results.html

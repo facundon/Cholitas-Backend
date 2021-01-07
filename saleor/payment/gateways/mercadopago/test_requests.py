@@ -32,7 +32,7 @@ def get_request_data(id):
     return body, header
 
 
-ID="1231949299"
+ID="1232191405"
 
 body, header = get_request_data(ID)
 
@@ -42,5 +42,5 @@ cases = {
     "WEBHOOK": requests.post('http://127.0.0.1:8000/plugins/mirumee.payments.mercadopago/webhooks/', data=json.dumps(body), headers=header),
 }
 
-response = cases.get("WEBHOOK")
-print(response)
+response = cases.get("GET")
+print(json.dumps(response, indent=2))

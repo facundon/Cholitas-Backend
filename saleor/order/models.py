@@ -173,6 +173,7 @@ class Order(ModelWithMetadata):
     weight = MeasurementField(
         measurement=Weight, unit_choices=WeightUnits.CHOICES, default=zero_weight
     )
+    external_link = models.CharField(max_length=255, blank=True, null=True)
     objects = OrderQueryset.as_manager()
 
     class Meta:

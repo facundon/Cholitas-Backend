@@ -227,7 +227,7 @@ def _prepare_order_data(
 
 
 @transaction.atomic
-def _create_order(*, checkout: Checkout, order_data: dict, user: User) -> Order:
+def _create_order(*, checkout: Checkout, order_data: dict, user: User, external_link: str) -> Order:
     """Create an order from the checkout.
 
     Each order will get a private copy of both the billing and the shipping
@@ -249,6 +249,7 @@ def _create_order(*, checkout: Checkout, order_data: dict, user: User) -> Order:
     order_lines = order_data.pop("lines")
 
     order = Order.objects.create(**order_data, checkout_token=checkout.token)
+    order.external_link = external_link
     for line in order_lines:
         line.order_id = order.pk
     order_lines = OrderLine.objects.bulk_create(order_lines)
@@ -409,7 +410,7 @@ def complete_checkout(
         payment_data=payment_data,
         order_data=order_data,
     )
-
+    
     if txn.customer_id and user.is_authenticated:
         store_customer_id(user, payment.gateway, txn.customer_id)  # type: ignore
 
@@ -420,7 +421,7 @@ def complete_checkout(
     if not action_required:
         try:
             order = _create_order(
-                checkout=checkout, order_data=order_data, user=user,  # type: ignore
+                checkout=checkout, order_data=order_data, user=user, external_link=txn.gateway_response["transaction_details"].get("external_resource_url") # type: ignore
             )
             # remove checkout after order is successfully created
             checkout.delete()

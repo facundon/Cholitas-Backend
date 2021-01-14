@@ -286,7 +286,7 @@ msgstr "Puede rastrear su envío con el código %(tracking_number)s."
 #, python-format
 msgctxt "Order confirmation e-mail subject"
 msgid "Order %(order)s details"
-msgstr "DEtalles del pedido %(order)s "
+msgstr "Detalles del pedido %(order)s "
 
 #: templates/templated_email/order/confirm_order.email:13
 msgctxt "Order confirmation e-mail text"

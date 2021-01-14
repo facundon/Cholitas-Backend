@@ -29,6 +29,7 @@ def _generate_response(
     return GatewayResponse(
         transaction_id=data.get("id", payment_information.token),
         action_required=False,
+        action_required_data={"externalResource": data["transaction_details"].get("external_resource_url")} or {},
         kind=kind,
         amount=data.get("amount", payment_information.amount),
         currency=data.get("currency", payment_information.currency),

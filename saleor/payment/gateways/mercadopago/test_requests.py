@@ -32,15 +32,12 @@ def get_request_data(id):
     return body, header
 
 
-ID="1232191405"
+ID="1232601094"
 
 body, header = get_request_data(ID)
 
-cases = {
-    "PUT": requests.put(f'https://api.mercadopago.com/v1/payments/{ID}', json={"status":"cancelled"}, headers={"Authorization": "Bearer TEST-5363032924027795-111104-87699c155b89e8fe293aa74af75664d3-670854424"}).json(),
-    "GET":requests.get(f'https://api.mercadopago.com/v1/payments/{ID}', headers={"Authorization": "Bearer TEST-5363032924027795-111104-87699c155b89e8fe293aa74af75664d3-670854424"}).json(),
-    "WEBHOOK": requests.post('http://127.0.0.1:8000/plugins/mirumee.payments.mercadopago/webhooks/', data=json.dumps(body), headers=header),
-}
+#response = requests.put(f'https://api.mercadopago.com/v1/payments/{ID}', json={"status":"cancelled"}, headers={"Authorization": "Bearer TEST-5363032924027795-111104-87699c155b89e8fe293aa74af75664d3-670854424"}).json(),
+#response = requests.get(f'https://api.mercadopago.com/v1/payments/{ID}', headers={"Authorization": "Bearer TEST-5363032924027795-111104-87699c155b89e8fe293aa74af75664d3-670854424"}).json(),
+#response = requests.post('http://127.0.0.1:8000/plugins/mirumee.payments.mercadopago/webhooks/', data=json.dumps(body), headers=header).json(),
 
-response = cases.get("GET")
 print(json.dumps(response, indent=2))

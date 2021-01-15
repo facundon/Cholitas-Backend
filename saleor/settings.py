@@ -73,6 +73,8 @@ DATABASES = {
     )
 }
 
+MERCADOPAGO_PAYMENTS_URL = "https://api.mercadopago.com/v1/payments"
+DOMAIN = "https://api.mercadopago.com/v1/payments"
 
 TIME_ZONE = "UTC"
 LANGUAGE_CODE = "es"

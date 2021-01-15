@@ -169,7 +169,7 @@ class CountryAwareAddressForm(AddressForm):
                 try:
                     error_msg = self.fields[field].error_messages[error_code]
                 except KeyError:
-                    error_msg = "This value is not valid for the address."
+                    error_msg = "Ingrese un valor válido para el domicilio."
                 self.add_error(field, ValidationError(error_msg, code=error_code))
 
     def validate_address(self, data):

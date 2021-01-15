@@ -421,7 +421,11 @@ def complete_checkout(
     if not action_required:
         try:
             order = _create_order(
-                checkout=checkout, order_data=order_data, user=user, external_link=txn.gateway_response["transaction_details"].get("external_resource_url") # type: ignore
+                checkout=checkout, 
+                order_data=order_data, 
+                user=user, 
+                external_link=txn.gateway_response["transaction_details"].get("external_resource_url"),
+                gateway_external_id=txn.gateway_response.get("id") # type: ignore
             )
             # remove checkout after order is successfully created
             checkout.delete()

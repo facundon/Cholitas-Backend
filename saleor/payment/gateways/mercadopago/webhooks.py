@@ -24,6 +24,7 @@ from ....order.actions import (
     order_captured,
     order_refunded,
 )
+from ....settings import MERCADOPAGO_PAYMENTS_URL
 
 
 logger = logging.getLogger(__name__)
@@ -124,12 +125,8 @@ def get_request_header(private_key: str, **_):
     return header
 
 
-def get_request_url(id):
-    return f"https://api.mercadopago.com/v1/payments/{id}"
-
-
 def get_mp_payment(id, gateway_config):
-    url = get_request_url(id)
+    url = f"{MERCADOPAGO_PAYMENTS_URL}/{id}"
     header = get_request_header(**gateway_config.connection_params)
     response = requests.get(url, headers=header).json()
     return response

@@ -8,6 +8,7 @@ from ... import TransactionKind
 from ...interface import GatewayConfig, GatewayResponse, PaymentData
 from . import errors
 from .utils import get_error_response
+from ....settings import MERCADOPAGO_PAYMENTS_URL, DOMAIN
 
 SUPPORTED_CURRENCIES = ("ARS",)
 OTHER_PAYMENT_METHODS = [
@@ -45,11 +46,6 @@ def check_payment_supported(payment_information: PaymentData):
         return errors.UNSUPPORTED_CURRENCY % {"currency": payment_information.currency}
 
 
-def get_request_url():
-    url = "https://api.mercadopago.com/v1/payments"
-    return url
-
-
 def get_request_header(private_key: str, **_):
     header = {"Authorization": f"Bearer {private_key}"}
     return header
@@ -60,7 +56,7 @@ def get_request_body(payment_information):
         body = {
             "transaction_amount": int(payment_information.amount),
             "description": payment_information.data["description"],
-            "notification_url": "http://c5d9b4e2435c.ngrok.io/plugins/mirumee.payments.mercadopago/webhooks/",
+            "notification_url": f"{DOMAIN}/plugins/mirumee.payments.mercadopago/webhooks/",
             "payment_method_id": payment_information.data["brand"],
             "statement_descriptor":"Cholitas Deco",
             "external_reference": payment_information.graphql_payment_id,
@@ -81,7 +77,7 @@ def get_request_body(payment_information):
             "installments": int(payment_information.data["installments"]),
             "transaction_amount": int(payment_information.amount),
             "description": payment_information.data["description"],
-            "notification_url": "http://c5d9b4e2435c.ngrok.io/plugins/mirumee.payments.mercadopago/webhooks/",
+            "notification_url": f"{DOMAIN}/plugins/mirumee.payments.mercadopago/webhooks/",
             "payment_method_id": payment_information.data["brand"],
             "statement_descriptor":"Cholitas Deco",
             "external_reference": payment_information.graphql_payment_id,
@@ -120,7 +116,7 @@ def get_request_body(payment_information):
 def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayResponse:
     error = check_payment_supported(payment_information=payment_information)
     if not error:
-        url = get_request_url()
+        url = MERCADOPAGO_PAYMENTS_URL
         header = get_request_header(**config.connection_params)
         payload = get_request_body(payment_information)
         response = requests.post(url, data=payload, headers=header).json()

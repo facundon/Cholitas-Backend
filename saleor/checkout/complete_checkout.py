@@ -227,7 +227,7 @@ def _prepare_order_data(
 
 
 @transaction.atomic
-def _create_order(*, checkout: Checkout, order_data: dict, user: User, external_link: str) -> Order:
+def _create_order(*, checkout: Checkout, order_data: dict, user: User, external_link: str, gateway_external_id: int) -> Order:
     """Create an order from the checkout.
 
     Each order will get a private copy of both the billing and the shipping
@@ -250,6 +250,7 @@ def _create_order(*, checkout: Checkout, order_data: dict, user: User, external_
 
     order = Order.objects.create(**order_data, checkout_token=checkout.token)
     order.external_link = external_link
+    order.gateway_external_id = gateway_external_id
     for line in order_lines:
         line.order_id = order.pk
     order_lines = OrderLine.objects.bulk_create(order_lines)

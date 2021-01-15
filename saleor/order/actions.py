@@ -1,4 +1,6 @@
 import logging
+import requests
+import environ
 from decimal import Decimal
 from typing import TYPE_CHECKING, Dict, List, Optional
 
@@ -23,6 +25,7 @@ from .utils import (
     restock_fulfillment_lines,
     update_order_status,
 )
+from ..settings import MERCADOPAGO_PAYMENTS_URL, MERCADOPAGO_PRIVATE_KEY
 
 if TYPE_CHECKING:
     from .models import Order
@@ -87,6 +90,12 @@ def cancel_order(order: "Order", user: Optional["User"]):
     manager = get_plugins_manager()
     manager.order_cancelled(order)
     manager.order_updated(order)
+
+    requests.put(
+        f'{MERCADOPAGO_PAYMENTS_URL}/{order.gateway_external_id}', 
+        json={"status":"cancelled"}, 
+        headers={"Authorization": f"Bearer {MERCADOPAGO_PRIVATE_KEY}"}
+        ).json(),
 
     send_order_canceled_confirmation(order, user)
 

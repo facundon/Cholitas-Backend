@@ -35,8 +35,8 @@ def clean_order_update_shipping(order, method):
         raise ValidationError(
             {
                 "order": ValidationError(
-                    "Cannot choose a shipping method for an order without "
-                    "the shipping address.",
+                    "No se puede elegir un metodo de envío para una orden"
+                    "sin el domicilio de envío.",
                     code=OrderErrorCode.ORDER_NO_SHIPPING_ADDRESS,
                 )
             }
@@ -49,7 +49,7 @@ def clean_order_update_shipping(order, method):
         raise ValidationError(
             {
                 "shipping_method": ValidationError(
-                    "Shipping method cannot be used with this order.",
+                    "Metodo de envío no puede ser usado con esta orden.",
                     code=OrderErrorCode.SHIPPING_METHOD_NOT_APPLICABLE,
                 )
             }
@@ -61,7 +61,7 @@ def clean_order_cancel(order):
         raise ValidationError(
             {
                 "order": ValidationError(
-                    "This order can't be canceled.",
+                    "Esta orden no puede ser cancelada.",
                     code=OrderErrorCode.CANNOT_CANCEL_ORDER,
                 )
             }
@@ -73,7 +73,7 @@ def clean_payment(payment):
         raise ValidationError(
             {
                 "payment": ValidationError(
-                    "There's no payment associated with the order.",
+                    "No hay pago asociado a la orden.",
                     code=OrderErrorCode.PAYMENT_MISSING,
                 )
             }

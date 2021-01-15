@@ -74,7 +74,8 @@ DATABASES = {
 }
 
 MERCADOPAGO_PAYMENTS_URL = "https://api.mercadopago.com/v1/payments"
-DOMAIN = "https://api.mercadopago.com/v1/payments"
+MERCADOPAGO_PRIVATE_KEY = env("MP_PRIVATE_KEY")
+DOMAIN = "http://c5d9b4e2435c.ngrok.io"
 
 TIME_ZONE = "UTC"
 LANGUAGE_CODE = "es"

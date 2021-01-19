@@ -496,7 +496,7 @@ REAL_IP_ENVIRON = os.environ.get("REAL_IP_ENVIRON", "REMOTE_ADDR")
 OPENTRACING_MAX_QUERY_LENGTH_LOG = 2000
 
 # Slugs for menus precreated in Django migrations
-DEFAULT_MENUS = {"top_menu_name": "navbar", "bottom_menu_name": "footer"}
+DEFAULT_MENUS = {"top_menu_name": "Barra de Navegación", "bottom_menu_name": "Pie de Página"}
 
 #  Sentry
 SENTRY_DSN = os.environ.get("SENTRY_DSN")
@@ -529,6 +529,7 @@ PLUGINS = [
     # "saleor.payment.gateways.adyen.plugin.AdyenGatewayPlugin",
     "saleor.plugins.invoicing.plugin.InvoicingPlugin",
     "saleor.payment.gateways.mercadopago.plugin.MercadoPagoGatewayPlugin",
+    "saleor.payment.gateways.transferencia.plugin.TransferenciaBancariaGatewayPlugin",
 ]
 
 # Plugin discovery

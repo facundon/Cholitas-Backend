@@ -27,17 +27,22 @@ def _generate_response(
     payment_information: PaymentData, kind: str, data: Dict
 ) -> GatewayResponse:
     """Generate Saleor transaction information from the payload or from passed data."""
-    return GatewayResponse(
-        transaction_id=data.get("id", payment_information.token),
-        action_required=False,
-        action_required_data={"externalResource": data["transaction_details"].get("external_resource_url")} or {},
-        kind=kind,
-        amount=data.get("amount", payment_information.amount),
-        currency=data.get("currency", payment_information.currency),
-        error=data.get("error"),
-        is_success=data.get("is_success", True),
-        raw_response=data,
-    )
+    try:
+        external_resource_url = data["transaction_details"].get("external_resource_url")
+    except KeyError:
+        external_resource_url = ""
+    finally:
+        return GatewayResponse(
+            transaction_id=data.get("id", payment_information.token),
+            action_required=False,
+            action_required_data={"externalResource": external_resource_url},
+            kind=kind,
+            amount=data.get("amount", payment_information.amount),
+            currency=data.get("currency", payment_information.currency),
+            error=data.get("error"),
+            is_success=data.get("is_success", True),
+            raw_response=data,
+        )
 
 
 def check_payment_supported(payment_information: PaymentData):

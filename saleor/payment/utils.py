@@ -19,7 +19,7 @@ from .models import Payment, Transaction
 
 logger = logging.getLogger(__name__)
 
-GENERIC_TRANSACTION_ERROR = "Transaction was unsuccessful"
+GENERIC_TRANSACTION_ERROR = "La transacción no tuvo exito"
 ALLOWED_GATEWAY_KINDS = {choices[0] for choices in TransactionKind.CHOICES}
 
 

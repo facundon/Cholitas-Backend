@@ -25,7 +25,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 ERROR_MSG = "Oops! Something went wrong."
-GENERIC_TRANSACTION_ERROR = "Transaction was unsuccessful."
+GENERIC_TRANSACTION_ERROR = "La transacción no tuvo exito."
 
 
 def raise_payment_error(fn: Callable) -> Callable:

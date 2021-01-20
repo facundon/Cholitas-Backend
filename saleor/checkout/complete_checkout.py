@@ -419,13 +419,17 @@ def complete_checkout(
     action_data = txn.action_required_data or {}
 
     order = None
+    try:
+        external_link = txn.gateway_response["transaction_details"].get("external_resource_url")
+    except KeyError:
+        external_link = None
     if not action_required:
         try:
             order = _create_order(
                 checkout=checkout, 
                 order_data=order_data, 
                 user=user, 
-                external_link=txn.gateway_response["transaction_details"].get("external_resource_url"),
+                external_link=external_link,
                 gateway_external_id=txn.gateway_response.get("id") # type: ignore
             )
             # remove checkout after order is successfully created

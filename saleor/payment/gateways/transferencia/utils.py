@@ -8,3 +8,8 @@ def get_error_response(amount: Decimal, **additional_kwargs) -> dict:
     """
     return {"is_success": False, "amount": amount, **additional_kwargs}
 
+
+def get_response(amount: Decimal, **additional_kwargs) -> dict:
+ 
+    return {"is_success": True, "amount": amount, **additional_kwargs}
+

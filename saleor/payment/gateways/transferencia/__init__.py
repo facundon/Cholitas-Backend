@@ -4,7 +4,7 @@ from typing import Dict
 
 from ... import TransactionKind
 from ...interface import GatewayConfig, GatewayResponse, PaymentData
-from .utils import get_error_response
+from .utils import get_error_response, get_response
 
 
 SUPPORTED_CURRENCIES = ("ARS",)
@@ -50,6 +50,7 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
         response = get_error_response(
             payment_information.amount, error=error, id=payment_information.token
         )
+    response = get_response(payment_information.amount, id=payment_information.token)
     return _generate_response(
         payment_information=payment_information,
         kind=TransactionKind.PENDING,
@@ -61,4 +62,4 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
 def process_payment(
     payment_information: PaymentData, config: GatewayConfig
 ) -> GatewayResponse:
-    return capture(payment_information=payment_information, transfer_data=config.connection_params)
+    return capture(payment_information=payment_information, config=config)

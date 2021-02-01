@@ -1,22 +1,48 @@
 <mjml>
   <mj-head>
+    <mj-title>Cholitas Deco</mj-title>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text font-weight="400" font-size="16px" color="#000000" line-height="24px" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-text>
+    </mj-attributes>
+    <mj-style inline="inline">
+      .body-section {
+      -webkit-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
+      -moz-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
+      box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
+      }
+    </mj-style>
     <mj-include path="./shared/styles.mjml" />
+    <mj-style inline="inline">
+      .text-link {
+      color: #5e6ebf
+      }
+    </mj-style>
+    <mj-style inline="inline">
+      .footer-link {
+      color: #888888
+      }
+    </mj-style>
+
   </mj-head>
-  <mj-body>
-    <mj-raw>
-      {% load i18n %}
-    </mj-raw>
+  <mj-body background-color="#EEE4D5" width="600px">
+    <mj-section full-width="full-width" background-color="#526a83" padding-bottom="0">
+      <mj-column width="100%">        
+        <mj-image src="https://res.cloudinary.com/dheck1ubc/image/upload/v1544156968/Email/Images/AnnouncementOffset/header-top.png" width="600px" alt="" padding="0" href="https://cholitasdeco.com" />
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#7494b3">
+    </mj-section>
+    <mj-wrapper padding-top="0" padding-bottom="0" css-class="body-section">
     <mj-include path="./shared/header.mjml" />
     <mj-section>
       <mj-column>
         <mj-text font-size="16px">
-          {% trans "Hi!" context "Standard e-mail greeting" %}
+          Hola!
         </mj-text>
         <mj-text>
-          {% blocktrans trimmed context "Email change e-mail text" %}
-          You're receiving this e-mail because you or someone else has requested an email change for your user account at {{ site_name }}.<br />
-          It can be safely ignored if you did not request an email change. Click the link below to confirm new email address.
-          {% endblocktrans %}
+            Recibiste este correo porque soliciaste un cambio de email para tu cuenta en {{ site_name }}.<br/>
+            Si no solicitaste el cambio, ignora el correo. De no ser asi, hace click en el siguiente enlace para cambiar tu email
         </mj-text>
         <mj-text>
           <a href="{{ redirect_url }}">
@@ -26,5 +52,24 @@
       </mj-column>
     </mj-section>
     <mj-include path="./shared/footer.mjml" />
+    </mj-wrapper>
+
+    <mj-wrapper full-width="full-width">
+      <mj-section>
+        <mj-column width="100%" padding="0">
+          <mj-social font-size="15px" icon-size="30px" mode="horizontal" padding="0" align="center">
+            <mj-social-element name="instagram" href="https://instagram.com/cholitas.deco/" background-color="#A1A0A0">
+            </mj-social-element>
+          </mj-social>
+          <mj-text color="#445566" font-size="11px" font-weight="bold" align="center">
+           	#cholitas.deco
+          </mj-text>
+          <mj-text color="#445566" font-size="11px" align="center" line-height="16px">
+            &copy; Cholitas Deco, Todos los derechos reservados.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
   </mj-body>
 </mjml>

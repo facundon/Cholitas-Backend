@@ -1,18 +1,7 @@
 <mj-section>
   <mj-column>
-    <mj-text>
-      {% blocktrans trimmed context "Base email text" %}
-        This is an automatically generated e-mail, please do not reply.
-      {% endblocktrans %}
-    </mj-text>
-  </mj-column>
-</mj-section>
-<mj-section background-color="#F2F2F2">
-  <mj-column>
-    <mj-text align="center">
-      {% blocktrans trimmed context "Base email footer" %}
-        Sincerely, {{ site_name }}
-      {% endblocktrans %}
+    <mj-text color="#445566" font-size="11px" align="center" line-height="16px">
+      Esto es un email generado automaticamente. Por favor no lo responda.
     </mj-text>
   </mj-column>
 </mj-section>

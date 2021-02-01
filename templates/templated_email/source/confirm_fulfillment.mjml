@@ -1,43 +1,86 @@
 <mjml>
   <mj-head>
-    <mj-include path="./shared/styles.mjml" />
+    <mj-title>Cholitas Deco</mj-title>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-all>
+      <mj-text font-weight="400" font-size="16px" color="#000000" line-height="24px" font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"></mj-text>
+    </mj-attributes>
+    <mj-style inline="inline">
+      .body-section {
+      -webkit-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
+      -moz-box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
+      box-shadow: 1px 4px 11px 0px rgba(0, 0, 0, 0.15);
+      }
+    </mj-style>
+    <mj-style inline="inline">
+      .text-link {
+      color: #5e6ebf
+      }
+    </mj-style>
+    <mj-style inline="inline">
+      .footer-link {
+      color: #888888
+      }
+    </mj-style>
+
   </mj-head>
-  <mj-body>
+  <mj-body background-color="#EEE4D5" width="600px">
     <mj-raw>
-      {% load i18n %}
+      {% load i18n_address_tags %}
     </mj-raw>
-    <mj-include path="./shared/header.mjml" />
+    <mj-section full-width="full-width" background-color="#526a83" padding-bottom="0">
+      <mj-column width="100%">        
+        <mj-image src="https://res.cloudinary.com/dheck1ubc/image/upload/v1544156968/Email/Images/AnnouncementOffset/header-top.png" width="600px" alt="" padding="0" href="https://cholitasdeco.com" />
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#7494b3">
+    </mj-section>
+    <mj-wrapper padding-top="0" padding-bottom="0" css-class="body-section">
+        <mj-include path="./shared/header.mjml" />
     <mj-section>
       <mj-column>
         <mj-text font-size="16px">
-          {% trans "Hi!" context "Standard e-mail greeting" %}
+          Hola!
         </mj-text>
         <mj-text>
-          {% blocktrans trimmed context "Fulfillment confirmation email text" %}
-            Thank you for your order. Below is the list of fulfilled products.
-          {% endblocktrans %}
+          Gracias por tu compra! A continuación se encuentran los productos que fueron enviados:
           {% if fulfillment.tracking_number %}
             {% if fulfillment.is_tracking_number_url %}
-              {% blocktrans trimmed with tracking_number=fulfillment.tracking_number context "Fulfillment confirmation email text" %}
-                You can track your shipment with <a href="{{ tracking_number }}">{{ tracking_number }}</a> link.
-              {% endblocktrans %}
+              Gracias por tu compra! A continuación se encuentran los productos que fueron enviados:
+                Podes seguir tu envío con el siguiente código: <a href="{{ tracking_number }}">{{ tracking_number }}</a>.
             {% else %}
-              {% blocktrans trimmed with tracking_number=fulfillment.tracking_number context "Fulfillment confirmation email text" %}
-                You can track your shipment with {{ tracking_number }} code.
-              {% endblocktrans %}
+              Gracias por tu compra! A continuación se encuentran los productos que fueron enviados:
+                Podes seguir tu envío con el siguiente código: {{ tracking_number }}.
             {% endif %}
           {% endif %}
         </mj-text>
         <mj-text>
           {% if digital_lines %}
-            {% blocktrans trimmed context "Fulfillment digital products email text" %}
-              You can download your digital products by clicking in download link(s).
-            {% endblocktrans %}
+              Podes descargar tus productos digitales haciendo click en los siguientess enlaces.
           {% endif %}
         </mj-text>
       </mj-column>
     </mj-section>
     <mj-include path="./partials/_fulfillment_lines.mjml" />
-    <mj-include path="./shared/footer.mjml" />
+      <mj-include path="./shared/footer.mjml" />
+    </mj-wrapper>
+
+    <mj-wrapper full-width="full-width">
+      <mj-section>
+        <mj-column width="100%" padding="0">
+          <mj-social font-size="15px" icon-size="30px" mode="horizontal" padding="0" align="center">
+            <mj-social-element name="instagram" href="https://instagram.com/cholitas.deco/" background-color="#A1A0A0">
+            </mj-social-element>
+          </mj-social>
+          <mj-text color="#445566" font-size="11px" font-weight="bold" align="center">
+           	#cholitas.deco
+          </mj-text>
+          <mj-text color="#445566" font-size="11px" align="center" line-height="16px">
+            &copy; Cholitas Deco, Todos los derechos reservados.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+
   </mj-body>
 </mjml>

@@ -7,10 +7,6 @@
     padding: 0px;
   }
 
-  td, th {
-    padding: 5px;
-  }
-
   .table-header-row {
      border-bottom: 2px solid #000;
   }

@@ -75,7 +75,7 @@ DATABASES = {
 
 MERCADOPAGO_PAYMENTS_URL = "https://api.mercadopago.com/v1/payments"
 MERCADOPAGO_PRIVATE_KEY = env("MP_PRIVATE_KEY")
-DOMAIN = "http://c5d9b4e2435c.ngrok.io"
+DOMAIN = "http://lvh.me"
 
 TIME_ZONE = "UTC"
 LANGUAGE_CODE = "es"
@@ -400,7 +400,7 @@ TEST_RUNNER = "saleor.tests.runner.PytestTestRunner"
 
 PLAYGROUND_ENABLED = get_bool_from_env("PLAYGROUND_ENABLED", True)
 
-ALLOWED_HOSTS = get_list(os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1"))
+ALLOWED_HOSTS = get_list(os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,lvh.me"))
 ALLOWED_GRAPHQL_ORIGINS = get_list(os.environ.get("ALLOWED_GRAPHQL_ORIGINS", "*"))
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

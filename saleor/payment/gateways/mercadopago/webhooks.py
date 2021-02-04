@@ -25,8 +25,9 @@ from ....order.actions import (
     order_refunded,
 )
 from ....settings import MERCADOPAGO_PAYMENTS_URL
-from .plugin import GATEWAY_ID
 
+
+GATEWAY_ID = "mirumee.payments.mercadopago"
 
 logger = logging.getLogger(__name__)
 

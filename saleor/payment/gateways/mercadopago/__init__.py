@@ -3,13 +3,15 @@ import requests
 import json
 from typing import Dict
 
-from .plugin import WEBHOOK_PATH, GATEWAY_ID
 from ... import TransactionKind
 from ...interface import GatewayConfig, GatewayResponse, PaymentData
 from . import errors
 from .utils import get_error_response
 from ....settings import MERCADOPAGO_PAYMENTS_URL, DOMAIN
 
+
+GATEWAY_ID = "mirumee.payments.mercadopago"
+WEBHOOK_PATH = "/webhooks"
 SUPPORTED_CURRENCIES = ("ARS",)
 OTHER_PAYMENT_METHODS = [
     "rapipago",

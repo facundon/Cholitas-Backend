@@ -25,6 +25,7 @@ from ....order.actions import (
     order_refunded,
 )
 from ....settings import MERCADOPAGO_PAYMENTS_URL
+from .plugin import GATEWAY_ID
 
 
 logger = logging.getLogger(__name__)
@@ -67,7 +68,7 @@ def get_payment(
     payments = (
         Payment.objects.prefetch_related("order", "checkout")
         .select_for_update(of=("self",))
-        .filter(id=db_payment_id, gateway="mirumee.payments.mercadopago")
+        .filter(id=db_payment_id, gateway=GATEWAY_ID)
     )
     if check_if_active:
         payments = payments.filter(is_active=True)

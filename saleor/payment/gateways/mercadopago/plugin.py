@@ -9,6 +9,7 @@ from . import GatewayConfig, capture, process_payment
 from .webhooks import handle_webhook
 
 GATEWAY_NAME = "Mercado Pago"
+GATEWAY_ID = "mirumee.payments.mercadopago"
 WEBHOOK_PATH = "/webhooks"
 
 if TYPE_CHECKING:
@@ -27,7 +28,7 @@ def require_active_plugin(fn):
 
 class MercadoPagoGatewayPlugin(BasePlugin):
     PLUGIN_NAME = GATEWAY_NAME
-    PLUGIN_ID = "mirumee.payments.mercadopago"
+    PLUGIN_ID = GATEWAY_ID
     DEFAULT_CONFIGURATION = [
         {"name": "Public API key", "value": None},
         {"name": "Secret API key", "value": None},

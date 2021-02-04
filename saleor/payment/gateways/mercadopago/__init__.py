@@ -3,7 +3,7 @@ import requests
 import json
 from typing import Dict
 
-
+from .plugin import WEBHOOK_PATH, GATEWAY_ID
 from ... import TransactionKind
 from ...interface import GatewayConfig, GatewayResponse, PaymentData
 from . import errors
@@ -61,7 +61,7 @@ def get_request_body(payment_information):
         body = {
             "transaction_amount": int(payment_information.amount),
             "description": payment_information.data["description"],
-            "notification_url": f"{DOMAIN}/plugins/mirumee.payments.mercadopago/webhooks/",
+            "notification_url": f"{DOMAIN}/plugins/{GATEWAY_ID}{WEBHOOK_PATH}/",
             "payment_method_id": payment_information.data["brand"],
             "statement_descriptor":"Cholitas Deco",
             "external_reference": payment_information.graphql_payment_id,
@@ -82,7 +82,7 @@ def get_request_body(payment_information):
             "installments": int(payment_information.data["installments"]),
             "transaction_amount": int(payment_information.amount),
             "description": payment_information.data["description"],
-            "notification_url": f"{DOMAIN}/plugins/mirumee.payments.mercadopago/webhooks/",
+            "notification_url": f"{DOMAIN}/plugins/{GATEWAY_ID}{WEBHOOK_PATH}/",
             "payment_method_id": payment_information.data["brand"],
             "statement_descriptor":"Cholitas Deco",
             "external_reference": payment_information.graphql_payment_id,

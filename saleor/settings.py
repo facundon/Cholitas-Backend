@@ -52,7 +52,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-_DEFAULT_CLIENT_HOSTS = "localhost,127.0.0.1"
+_DEFAULT_CLIENT_HOSTS = "localhost,127.0.0.1,http://lvh.me"
 
 ALLOWED_CLIENT_HOSTS = os.environ.get("ALLOWED_CLIENT_HOSTS")
 if not ALLOWED_CLIENT_HOSTS:
@@ -65,16 +65,16 @@ if not ALLOWED_CLIENT_HOSTS:
 
 ALLOWED_CLIENT_HOSTS = get_list(ALLOWED_CLIENT_HOSTS)
 
-INTERNAL_IPS = get_list(os.environ.get("INTERNAL_IPS", "127.0.0.1"))
+INTERNAL_IPS = get_list(os.environ.get("INTERNAL_IPS", "127.0.0.1", "http://lvh.me"))
 
 DATABASES = {
     "default": dj_database_url.config(
-        default=env("DATABASE"), conn_max_age=600
+        default=os.environ.get("DATABASE", env("DATABASE")), conn_max_age=600
     )
 }
 
 MERCADOPAGO_PAYMENTS_URL = "https://api.mercadopago.com/v1/payments"
-MERCADOPAGO_PRIVATE_KEY = env("MP_PRIVATE_KEY")
+MERCADOPAGO_PRIVATE_KEY = os.environ.get("MP_PRIVATE_KEY", env("MP_PRIVATE_KEY"))
 DOMAIN = "http://lvh.me"
 
 TIME_ZONE = "UTC"
@@ -137,7 +137,7 @@ USE_TZ = True
 
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 
-EMAIL_URL = env("EMAIL_URL")
+EMAIL_URL = os.environ.get("EMAIL_URL", env("EMAIL_URL"))
 SENDGRID_USERNAME = os.environ.get("SENDGRID_USERNAME")
 SENDGRID_PASSWORD = os.environ.get("SENDGRID_PASSWORD")
 if not EMAIL_URL and SENDGRID_USERNAME and SENDGRID_PASSWORD:
@@ -209,7 +209,7 @@ TEMPLATES = [
 ]
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 if not SECRET_KEY and DEBUG:
     warnings.warn("SECRET_KEY not configured, using a random temporary key.")

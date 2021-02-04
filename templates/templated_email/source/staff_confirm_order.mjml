@@ -44,7 +44,7 @@
           Hola!
         </mj-text>
         <mj-text>
-            Alguien compro algo!!!. Para ver los detalles entra a: <a href="{{ order_details_url }}">{{ order_details_url }}</a>
+            Alguien compro algo!!!. A continuación los detalles: <a href="{{ order_details_url }}">{{ order_details_url }}</a>
         </mj-text>
       </mj-column>
     </mj-section>

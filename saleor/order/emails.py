@@ -3,6 +3,7 @@ from urllib.parse import urlencode
 
 from templated_email import send_templated_mail
 
+from ..settings import STAFF_NOTIFICATION_EMAIL
 from ..account.models import StaffNotificationRecipient
 from ..celeryconf import app
 from ..core.emails import get_email_context
@@ -108,6 +109,7 @@ def send_staff_order_confirmation(order_pk, redirect_url):
     staff_email_data = collect_staff_order_notification_data(
         order_pk, STAFF_CONFIRM_ORDER_TEMPLATE, redirect_url
     )
+    staff_email_data["recipient_list"] = STAFF_NOTIFICATION_EMAIL
     if staff_email_data["recipient_list"]:
         send_templated_mail(**staff_email_data)
 

@@ -52,7 +52,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 
-_DEFAULT_CLIENT_HOSTS = "localhost,127.0.0.1,http://lvh.me"
+_DEFAULT_CLIENT_HOSTS = "localhost,127.0.0.1,lvh.me"
 
 ALLOWED_CLIENT_HOSTS = os.environ.get("ALLOWED_CLIENT_HOSTS")
 if not ALLOWED_CLIENT_HOSTS:
@@ -76,6 +76,7 @@ DATABASES = {
 MERCADOPAGO_PAYMENTS_URL = "https://api.mercadopago.com/v1/payments"
 MERCADOPAGO_PRIVATE_KEY = os.environ.get("MP_PRIVATE_KEY", env("MP_PRIVATE_KEY"))
 DOMAIN = "http://lvh.me"
+STAFF_NOTIFICATION_EMAIL = get_list(os.environ.get("STAFF_NOTIFICATION_EMAIL", "cholitas.deco@gmail.com"))
 
 TIME_ZONE = "UTC"
 LANGUAGE_CODE = "es"

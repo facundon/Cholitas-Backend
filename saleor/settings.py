@@ -75,7 +75,7 @@ DATABASES = {
 
 MERCADOPAGO_PAYMENTS_URL = "https://api.mercadopago.com/v1/payments"
 MERCADOPAGO_PRIVATE_KEY = os.environ.get("MP_PRIVATE_KEY", env("MP_PRIVATE_KEY"))
-DOMAIN = "http://lvh.me"
+DOMAIN = os.environ.get("DOMAIN", "http://lvh.me")
 STAFF_NOTIFICATION_EMAIL = get_list(os.environ.get("STAFF_NOTIFICATION_EMAIL", "cholitas.deco@gmail.com"))
 
 TIME_ZONE = "UTC"

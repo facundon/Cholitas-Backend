@@ -49,6 +49,7 @@ WSGI_APPLICATION = "saleor.wsgi.application"
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
+    "Florencia", "cholitas.deco@gmail.com"
 )
 MANAGERS = ADMINS
 

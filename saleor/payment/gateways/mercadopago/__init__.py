@@ -127,7 +127,6 @@ def capture(payment_information: PaymentData, config: GatewayConfig) -> GatewayR
         header = get_request_header(**config.connection_params)
         payload = get_request_body(payment_information)
         response = requests.post(url, data=payload, headers=header).json()
-
         if response["status"] != "approved":
             if response["status"] == "in_process" or response["status"] == "pending":
                 return _generate_response(

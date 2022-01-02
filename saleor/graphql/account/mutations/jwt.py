@@ -96,7 +96,7 @@ class CreateToken(BaseMutation):
             raise ValidationError(
                 {
                     "email": ValidationError(
-                        "Ingrese credenciales válidas",
+                        "Usuario o contraseña incorrectos",
                         code=AccountErrorCode.INVALID_CREDENTIALS.value,
                     )
                 }
